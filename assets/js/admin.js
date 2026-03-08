@@ -4,7 +4,7 @@
  * Handles all admin-side interactions, AJAX requests, and UI behaviors
  * for the dummy content generation plugin.
  *
- * @package WP_Dummy_Content_Filler
+ * @package Dummy_Content_Filler_Pro
  * @subpackage Assets
  * @since 1.0.0
  * @author Shimanta Das

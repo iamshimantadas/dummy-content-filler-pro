@@ -2,20 +2,20 @@
 /**
  * Main plugin class for WP Dummy Content Filler
  * 
- * @package WP_Dummy_Content_Filler
+ * @package Dummy_Content_Filler_Pro
  * @subpackage Includes
  * @since 1.0.0
  */
 
 /**
- * Class WP_Dummy_Content_Filler
+ * Class Dummy_Content_Filler_Pro
  * 
  * Handles all dummy content generation for posts, pages, and custom post types
  * 
  * @since 1.0.0
  * @access public
  */
-class WP_Dummy_Content_Filler
+class Dummy_Content_Filler_Pro
 {
 
     /**
@@ -23,7 +23,7 @@ class WP_Dummy_Content_Filler
      *
      * @since 1.0.0
      * @access private
-     * @var WP_Dummy_Content_Filer|null
+     * @var Dummy_Content_Filler_Pro|null
      */
     private static $instance = null;
 
@@ -73,7 +73,7 @@ class WP_Dummy_Content_Filler
      * @since 1.0.0
      * @access public
      * @static
-     * @return WP_Dummy_Content_Filler Singleton instance
+     * @return Dummy_Content_Filler_Pro Singleton instance
      */
     public static function mc_get_instance()
     {
@@ -139,24 +139,24 @@ class WP_Dummy_Content_Filler
      */
     public function mc_enqueue_admin_scripts($hook)
     {
-        if (strpos($hook, 'wp-dummy-content-filler') !== false) {
+        if (strpos($hook, 'dummy-content-filler-pro') !== false) {
             wp_enqueue_script(
-                'wp-dummy-content-filler-admin',
-                WP_DUMMY_CONTENT_FILLER_PLUGIN_URL . 'assets/js/admin.js',
+                'dummy-content-filler-pro-admin',
+                DUMMY_CONTENT_FILLER_PRO_PLUGIN_URL . 'assets/js/admin.js',
                 ['jquery'],
-                WP_DUMMY_CONTENT_FILLER_VERSION,
+                DUMMY_CONTENT_FILLER_PRO_VERSION,
                 true
             );
 
             wp_enqueue_style(
-                'wp-dummy-content-filler-admin',
-                WP_DUMMY_CONTENT_FILLER_PLUGIN_URL . 'assets/css/admin.css',
+                'dummy-content-filler-pro-admin',
+                DUMMY_CONTENT_FILLER_PRO_PLUGIN_URL . 'assets/css/admin.css',
                 [],
-                WP_DUMMY_CONTENT_FILLER_VERSION
+                DUMMY_CONTENT_FILLER_PRO_VERSION
             );
 
             // Localize script for AJAX
-            wp_localize_script('wp-dummy-content-filler-admin', 'wpdcf_ajax', [
+            wp_localize_script('dummy-content-filler-pro-admin', 'wpdcf_ajax', [
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('wpdcf_ajax_nonce')
             ]);
@@ -176,27 +176,27 @@ class WP_Dummy_Content_Filler
             'WP Dummy Content Filler',
             'Dummy Content',
             'manage_options',
-            'wp-dummy-content-filler',
+            'dummy-content-filler-pro',
             [$this, 'mc_render_post_types_page'],
-            WP_DUMMY_CONTENT_FILLER_PLUGIN_URL . 'assets/icon/icon.png',
+            DUMMY_CONTENT_FILLER_PRO_PLUGIN_URL . 'assets/icon.png',
             30
         );
 
         add_submenu_page(
-            'wp-dummy-content-filler',
+            'dummy-content-filler-pro',
             'Post Types',
             'Post Types',
             'manage_options',
-            'wp-dummy-content-filler',
+            'dummy-content-filler-pro',
             [$this, 'mc_render_post_types_page']
         );
 
         add_submenu_page(
-            'wp-dummy-content-filler',
+            'dummy-content-filler-pro',
             'Users',
             'Users',
             'manage_options',
-            'wp-dummy-content-filler-users',
+            'dummy-content-filler-pro-users',
             [$this, 'mc_render_users_page']
         );
     }
@@ -211,12 +211,12 @@ class WP_Dummy_Content_Filler
     public function mc_add_products_menu()
     {
         add_submenu_page(
-            'wp-dummy-content-filler',
+            'dummy-content-filler-pro',
             'Products',
             'Products',
             'manage_options',
-            'wp-dummy-content-filler-products',
-            [WP_Dummy_Content_Filler_Products::mc_get_instance(), 'mc_render_products_page']
+            'dummy-content-filler-pro-products',
+            [Dummy_Content_Filler_Pro_Products::mc_get_instance(), 'mc_render_products_page']
         );
     }
 
@@ -248,7 +248,7 @@ class WP_Dummy_Content_Filler
                         'message' => 'Invalid post type selected.',
                         'type'    => 'error'
                     ], 45);
-                    wp_safe_redirect(admin_url('admin.php?page=wp-dummy-content-filler'));
+                    wp_safe_redirect(admin_url('admin.php?page=dummy-content-filler-pro'));
                     exit;
                 }
 
@@ -263,7 +263,7 @@ class WP_Dummy_Content_Filler
                     'type' => 'success'
                 ], 45);
 
-                wp_safe_redirect(admin_url('admin.php?page=wp-dummy-content-filler'));
+                wp_safe_redirect(admin_url('admin.php?page=dummy-content-filler-pro'));
                 exit;
             }
         }
@@ -286,7 +286,7 @@ class WP_Dummy_Content_Filler
                     'type' => 'success'
                 ], 45);
 
-                wp_safe_redirect(admin_url('admin.php?page=wp-dummy-content-filler-users'));
+                wp_safe_redirect(admin_url('admin.php?page=dummy-content-filler-pro-users'));
                 exit;
             }
         }
@@ -396,7 +396,7 @@ class WP_Dummy_Content_Filler
             )
         ], 30);
 
-        wp_safe_redirect(admin_url('admin.php?page=wp-dummy-content-filler'));
+        wp_safe_redirect(admin_url('admin.php?page=dummy-content-filler-pro'));
         exit;
     }
 
@@ -447,7 +447,7 @@ class WP_Dummy_Content_Filler
 
         if ($post_id && !is_wp_error($post_id)) {
             // Add our meta key to identify dummy posts
-            update_post_meta($post_id, WP_DUMMY_CONTENT_FILLER_META_KEY, '1');
+            update_post_meta($post_id, DUMMY_CONTENT_FILLER_PRO_META_KEY, '1');
 
             // Add featured image if requested
             if ($with_images) {
@@ -548,7 +548,7 @@ class WP_Dummy_Content_Filler
                 $created++;
 
                 // Add meta to identify dummy terms
-                add_term_meta($term['term_id'], WP_DUMMY_CONTENT_FILLER_META_KEY, '1');
+                add_term_meta($term['term_id'], DUMMY_CONTENT_FILLER_PRO_META_KEY, '1');
             }
         }
 
@@ -629,13 +629,13 @@ class WP_Dummy_Content_Filler
      */
     private function mc_attach_featured_image($post_id)
     {
-        $image_dir = WP_DUMMY_CONTENT_FILLER_PLUGIN_DIR . 'assets/img/';
+        $image_dir = DUMMY_CONTENT_FILLER_PRO_PLUGIN_DIR . 'assets/img/';
 
         if (!file_exists($image_dir)) {
             return false;
         }
 
-        $images = glob($image_dir . 'wp_dummy_content_filler_img_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+        $images = glob($image_dir . 'dummy_content_filler_img_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
 
         if (empty($images)) {
             return false;
@@ -791,7 +791,7 @@ class WP_Dummy_Content_Filler
         $args = [
             'post_type'      => $post_type,
             'posts_per_page' => -1,
-            'meta_key'       => WP_DUMMY_CONTENT_FILLER_META_KEY,
+            'meta_key'       => DUMMY_CONTENT_FILLER_PRO_META_KEY,
             'meta_value'     => '1',
             'fields'         => 'ids',
             'post_status'    => 'any', // Include all statuses
@@ -829,7 +829,7 @@ class WP_Dummy_Content_Filler
         global $wpdb;
 
         // Check if this is a dummy post
-        $is_dummy = get_post_meta($post_id, WP_DUMMY_CONTENT_FILLER_META_KEY, true);
+        $is_dummy = get_post_meta($post_id, DUMMY_CONTENT_FILLER_PRO_META_KEY, true);
 
         if ($is_dummy === '1') {
             // Delete all post meta for this post
@@ -840,7 +840,7 @@ class WP_Dummy_Content_Filler
             );
 
             // Delete from our tracking if it exists separately
-            delete_post_meta($post_id, WP_DUMMY_CONTENT_FILLER_META_KEY);
+            delete_post_meta($post_id, DUMMY_CONTENT_FILLER_PRO_META_KEY);
         }
     }
 
@@ -879,7 +879,7 @@ class WP_Dummy_Content_Filler
             // Get all terms with our dummy marker
             $terms = get_terms([
                 'taxonomy'     => $taxonomy,
-                'meta_key'     => WP_DUMMY_CONTENT_FILLER_META_KEY,
+                'meta_key'     => DUMMY_CONTENT_FILLER_PRO_META_KEY,
                 'meta_value'   => '1',
                 'hide_empty'   => false,
                 'fields'       => 'ids',
@@ -1171,7 +1171,7 @@ class WP_Dummy_Content_Filler
 
             if (!is_wp_error($user_id)) {
                 // Add our meta key
-                update_user_meta($user_id, WP_DUMMY_CONTENT_FILLER_META_KEY, '1');
+                update_user_meta($user_id, DUMMY_CONTENT_FILLER_PRO_META_KEY, '1');
 
                 // Always add first name and last name
                 if ($faker) {
@@ -1214,7 +1214,7 @@ class WP_Dummy_Content_Filler
             )
         ], 30);
 
-        wp_safe_redirect(admin_url('admin.php?page=wp-dummy-content-filler-users'));
+        wp_safe_redirect(admin_url('admin.php?page=dummy-content-filler-pro-users'));
         exit;
     }
 
@@ -1230,7 +1230,7 @@ class WP_Dummy_Content_Filler
         global $wpdb;
 
         $args = [
-            'meta_key'   => WP_DUMMY_CONTENT_FILLER_META_KEY,
+            'meta_key'   => DUMMY_CONTENT_FILLER_PRO_META_KEY,
             'meta_value' => '1',
             'fields'     => 'ids',
         ];
@@ -1268,7 +1268,7 @@ class WP_Dummy_Content_Filler
         global $wpdb;
 
         // Check if this is a dummy user
-        $is_dummy = get_user_meta($user_id, WP_DUMMY_CONTENT_FILLER_META_KEY, true);
+        $is_dummy = get_user_meta($user_id, DUMMY_CONTENT_FILLER_PRO_META_KEY, true);
 
         if ($is_dummy === '1') {
             // Delete all user meta for this user
@@ -1279,7 +1279,7 @@ class WP_Dummy_Content_Filler
             );
 
             // Delete from our tracking if it exists separately
-            delete_user_meta($user_id, WP_DUMMY_CONTENT_FILLER_META_KEY);
+            delete_user_meta($user_id, DUMMY_CONTENT_FILLER_PRO_META_KEY);
         }
     }
 
@@ -1503,7 +1503,7 @@ class WP_Dummy_Content_Filler
         $args = [
             'post_type'      => $post_types,
             'posts_per_page' => 50,
-            'meta_key'       => WP_DUMMY_CONTENT_FILLER_META_KEY,
+            'meta_key'       => DUMMY_CONTENT_FILLER_PRO_META_KEY,
             'meta_value'     => '1',
         ];
 
@@ -1591,7 +1591,7 @@ class WP_Dummy_Content_Filler
 
         // Also update the delete section to exclude product post type
         ?>
-        <div class="wrap wp-dummy-content-filler">
+        <div class="wrap dummy-content-filler-pro">
             <h1>Dummy Content Filler - Post Types</h1>
 
             <?php $this->mc_show_results_message(); ?>
@@ -1643,7 +1643,7 @@ class WP_Dummy_Content_Filler
 
                 <div class="filter-section">
                     <form method="get" action="" class="filter-dummy-posts">
-                        <input type="hidden" name="page" value="wp-dummy-content-filler">
+                        <input type="hidden" name="page" value="dummy-content-filler-pro">
                         <table class="form-table">
                             <tr>
                                 <th scope="row">Filter by Post Type</th>
@@ -1712,7 +1712,7 @@ class WP_Dummy_Content_Filler
     {
         $user_meta_keys = $this->mc_get_user_meta_keys();
         ?>
-        <div class="wrap wp-dummy-content-filler">
+        <div class="wrap dummy-content-filler-pro">
             <h1>Dummy Content Filler - Users</h1>
 
             <?php
@@ -1809,7 +1809,7 @@ class WP_Dummy_Content_Filler
                 <h3>Dummy Users Created by Plugin</h3>
                 <?php
                 $dummy_users = get_users([
-                    'meta_key'   => WP_DUMMY_CONTENT_FILLER_META_KEY,
+                    'meta_key'   => DUMMY_CONTENT_FILLER_PRO_META_KEY,
                     'meta_value' => '1',
                 ]);
 
@@ -1842,7 +1842,7 @@ class WP_Dummy_Content_Filler
                     echo '<div style="margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px;">';
                     echo '<p><strong>Warning:</strong> This will permanently delete ALL dummy users (except admin) along with their meta data.</p>';
                     echo '<p><a href="' . esc_url(add_query_arg([
-                        'page'             => 'wp-dummy-content-filler-users',
+                        'page'             => 'dummy-content-filler-pro-users',
                         'clear_dummy_users' => '1',
                         '_wpnonce'          => $nonce
                     ], admin_url('admin.php'))) . '" class="button button-danger" onclick="return confirm(\'WARNING: This will PERMANENTLY delete ALL dummy users (except admin) along with their meta data. This action cannot be undone. Are you sure?\')">Delete All Dummy Users</a></p>';

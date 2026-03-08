@@ -5,27 +5,27 @@
  * Handles generation of dummy WooCommerce products with variations,
  * categories, attributes, and product meta data.
  *
- * @package WP_Dummy_Content_Filler
+ * @package Dummy_Content_Filler_Pro
  * @subpackage Includes
  * @since 1.0.0
  */
 
 /**
- * Class WP_Dummy_Content_Filler_Products
+ * Class Dummy_Content_Filler_Pro_Products
  * 
  * Manages all WooCommerce product dummy content generation functionality.
  *
  * @since 1.0.0
  * @access public
  */
-class WP_Dummy_Content_Filler_Products
+class Dummy_Content_Filler_Pro_Products
 {
     /**
      * Singleton instance of the class
      *
      * @since 1.0.0
      * @access private
-     * @var WP_Dummy_Content_Filler_Products|null
+     * @var Dummy_Content_Filler_Pro_Products|null
      */
     private static $instance = null;
 
@@ -66,7 +66,7 @@ class WP_Dummy_Content_Filler_Products
      * @since 1.0.0
      * @access public
      * @static
-     * @return WP_Dummy_Content_Filler_Products Singleton instance
+     * @return Dummy_Content_Filler_Pro_Products Singleton instance
      */
     public static function mc_get_instance()
     {
@@ -84,7 +84,7 @@ class WP_Dummy_Content_Filler_Products
      */
     private function __construct()
     {
-        $this->csv_file_path = WP_DUMMY_CONTENT_FILLER_PLUGIN_DIR . 'woo-data/walmart-products.csv';
+        $this->csv_file_path = DUMMY_CONTENT_FILLER_PRO_PLUGIN_DIR . 'woo-data/walmart-products.csv';
         $this->mc_init_hooks();
         $this->mc_load_product_data();
     }
@@ -191,7 +191,7 @@ class WP_Dummy_Content_Filler_Products
                     'type' => 'success'
                 ], 45);
 
-                wp_safe_redirect(admin_url('admin.php?page=wp-dummy-content-filler-products'));
+                wp_safe_redirect(admin_url('admin.php?page=dummy-content-filler-pro-products'));
                 exit;
             }
         }
@@ -250,7 +250,7 @@ class WP_Dummy_Content_Filler_Products
                 '_product_attributes', '_default_attributes',
                 '_variation_description', '_menu_order',
                 '_downloadable_files', '_children', '_files',
-                '_mc_wp_dummy_content_filler'  -- Exclude our meta key
+                '_mc_dummy_content_filler_pro'  -- Exclude our meta key
             )
             ORDER BY meta_key
             LIMIT 50
@@ -259,7 +259,7 @@ class WP_Dummy_Content_Filler_Products
         // Format custom meta keys
         $custom_fields = [];
         foreach ($custom_meta_keys as $key) {
-            if (!isset($default_woo_fields[$key]) && $key !== '_mc_wp_dummy_content_filler') {
+            if (!isset($default_woo_fields[$key]) && $key !== '_mc_dummy_content_filler_pro') {
                 $label = ucwords(str_replace(['_', '-'], ' ', $key));
                 $custom_fields[$key] = $label;
             }
@@ -350,7 +350,7 @@ class WP_Dummy_Content_Filler_Products
                 'message' => 'WooCommerce is not installed or activated.',
                 'type'    => 'error'
             ], 30);
-            wp_safe_redirect(admin_url('admin.php?page=wp-dummy-content-filler-products'));
+            wp_safe_redirect(admin_url('admin.php?page=dummy-content-filler-pro-products'));
             exit;
         }
 
@@ -435,7 +435,7 @@ class WP_Dummy_Content_Filler_Products
             )
         ], 30);
 
-        wp_safe_redirect(admin_url('admin.php?page=wp-dummy-content-filler-products'));
+        wp_safe_redirect(admin_url('admin.php?page=dummy-content-filler-pro-products'));
         exit;
     }
 
@@ -517,7 +517,7 @@ class WP_Dummy_Content_Filler_Products
             wp_set_object_terms($product_id, 'simple', 'product_type');
 
             // Add our meta key to identify dummy products
-            update_post_meta($product_id, WP_DUMMY_CONTENT_FILLER_META_KEY, '1');
+            update_post_meta($product_id, DUMMY_CONTENT_FILLER_PRO_META_KEY, '1');
 
             // Set basic WooCommerce meta
             $this->mc_set_basic_product_meta($product_id, $product_data);
@@ -559,7 +559,7 @@ class WP_Dummy_Content_Filler_Products
 
             // Add configured product meta (only if type is not empty)
             foreach ($meta_config as $meta_key => $config) {
-                if ($meta_key === '_mc_wp_dummy_content_filler') {
+                if ($meta_key === '_mc_dummy_content_filler_pro') {
                     continue; // Skip our meta key
                 }
 
@@ -673,7 +673,7 @@ class WP_Dummy_Content_Filler_Products
     private function mc_get_product_meta_value($meta_key, $config, $product_data)
     {
         // Skip our meta key
-        if ($meta_key === '_mc_wp_dummy_content_filler') {
+        if ($meta_key === '_mc_dummy_content_filler_pro') {
             return null;
         }
 
@@ -844,14 +844,14 @@ class WP_Dummy_Content_Filler_Products
         }
 
         // Fall back to plugin assets from products folder
-        $image_dir = WP_DUMMY_CONTENT_FILLER_PLUGIN_DIR . 'assets/img/products/';
+        $image_dir = DUMMY_CONTENT_FILLER_PRO_PLUGIN_DIR . 'assets/img/products/';
 
         if (!file_exists($image_dir)) {
             return false; // Don't fall back to general img directory
         }
 
         // Look for product-specific images
-        $product_images = glob($image_dir . 'wp_dummy_content_filler_product_img_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+        $product_images = glob($image_dir . 'dummy_content_filler_product_img_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
 
         if (empty($product_images)) {
             return false; // No product images found
@@ -971,14 +971,14 @@ class WP_Dummy_Content_Filler_Products
      */
     private function mc_attach_product_gallery($product_id)
     {
-        $image_dir = WP_DUMMY_CONTENT_FILLER_PLUGIN_DIR . 'assets/img/products/';
+        $image_dir = DUMMY_CONTENT_FILLER_PRO_PLUGIN_DIR . 'assets/img/products/';
 
         if (!file_exists($image_dir)) {
             return; // Don't use gallery if products folder doesn't exist
         }
 
         // Look for product-specific images only
-        $product_images = glob($image_dir . 'wp_dummy_content_filler_product_img_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+        $product_images = glob($image_dir . 'dummy_content_filler_product_img_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
 
         if (empty($product_images)) {
             return; // No product images found
@@ -1093,7 +1093,7 @@ class WP_Dummy_Content_Filler_Products
                 $created++;
 
                 // Add meta to identify dummy terms
-                add_term_meta($term['term_id'], WP_DUMMY_CONTENT_FILLER_META_KEY, '1');
+                add_term_meta($term['term_id'], DUMMY_CONTENT_FILLER_PRO_META_KEY, '1');
             }
         }
 
@@ -1114,7 +1114,7 @@ class WP_Dummy_Content_Filler_Products
         $args = [
             'post_type'      => 'product',
             'posts_per_page' => -1,
-            'meta_key'       => WP_DUMMY_CONTENT_FILLER_META_KEY,
+            'meta_key'       => DUMMY_CONTENT_FILLER_PRO_META_KEY,
             'meta_value'     => '1',
             'fields'         => 'ids',
             'post_status'    => 'any',
@@ -1147,13 +1147,20 @@ class WP_Dummy_Content_Filler_Products
      */
     private function mc_cleanup_dummy_product_terms()
     {
-        $taxonomies = ['product_cat', 'product_tag', 'product_visibility', 'product_shipping_class'];
+        // $taxonomies = ['product_cat', 'product_tag', 'product_visibility', 'product_shipping_class'];
+        // Get ALL taxonomies associated with products
+    $product_taxonomies = get_object_taxonomies('product', 'names');
+    
+    // If no taxonomies found, return
+    if (empty($product_taxonomies)) {
+        return;
+    }
 
         foreach ($taxonomies as $taxonomy) {
             // Get all terms with our dummy marker
             $terms = get_terms([
                 'taxonomy'     => $taxonomy,
-                'meta_key'     => WP_DUMMY_CONTENT_FILLER_META_KEY,
+                'meta_key'     => DUMMY_CONTENT_FILLER_PRO_META_KEY,
                 'meta_value'   => '1',
                 'hide_empty'   => false,
                 'fields'       => 'ids',
@@ -1420,7 +1427,7 @@ class WP_Dummy_Content_Filler_Products
         $args = [
             'post_type'      => 'product',
             'posts_per_page' => 50,
-            'meta_key'       => WP_DUMMY_CONTENT_FILLER_META_KEY,
+            'meta_key'       => DUMMY_CONTENT_FILLER_PRO_META_KEY,
             'meta_value'     => '1',
         ];
 
@@ -1502,7 +1509,7 @@ class WP_Dummy_Content_Filler_Products
 
         $available_data = $this->mc_get_available_product_data();
         ?>
-        <div class="wrap wp-dummy-content-filler">
+        <div class="wrap dummy-content-filler-pro">
             <h1>Dummy Content Filler - WooCommerce Products</h1>
 
             <?php
@@ -1545,7 +1552,7 @@ class WP_Dummy_Content_Filler_Products
                 <h3>Dummy Products Created by Plugin</h3>
                 <div class="filter-section">
                     <form method="get" action="" class="filter-dummy-products">
-                        <input type="hidden" name="page" value="wp-dummy-content-filler-products">
+                        <input type="hidden" name="page" value="dummy-content-filler-pro-products">
                         <table class="form-table">
                             <tr>
                                 <th scope="row">Filter Products</th>

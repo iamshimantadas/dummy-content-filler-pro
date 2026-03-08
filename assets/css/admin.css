@@ -4,7 +4,7 @@
  * Styles for the admin interface of the dummy content generation plugin.
  * Includes tab styling, form layouts, table designs, and notification styles.
  *
- * @package WP_Dummy_Content_Filler
+ * @package Dummy_Content_Filler_Pro
  * @subpackage Assets
  * @since 1.0.0
  * @author Shimanta Das
@@ -14,7 +14,7 @@
 /**
  * Tab content containers
  */
-.wp-dummy-content-filler .tab-content {
+.dummy-content-filler-pro .tab-content {
     display: none;
     margin-top: 20px;
     padding: 20px;
@@ -24,7 +24,7 @@
     border-radius: 4px;
 }
 
-.wp-dummy-content-filler .tab-content.active {
+.dummy-content-filler-pro .tab-content.active {
     display: block;
 }
 
