@@ -1,38 +1,111 @@
 {
-    "name": "microcodes/dummy-content-filler-pro",
-    "description": "WordPress plugin to generate dummy content for posts, pages, custom post types, users, and WooCommerce products.",
+    "name": "microcodes/draxira",
+    "description": "Draxira - WordPress plugin to generate realistic dummy content for posts, pages, custom post types, users, and WooCommerce products with advanced ACF/CMB2 support.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Shimanta Das",
             "email": "shimanta@microcodes.in",
-            "homepage": "https://microcodes.in"
+            "homepage": "https://microcodes.in",
+            "role": "Lead Developer"
+        },
+        {
+            "name": "Microcodes Team",
+            "homepage": "https://microcodes.in",
+            "role": "Contributor"
         }
     ],
     "require": {
         "php": ">=7.2",
-        "fakerphp/faker": "^1.23"
+        "fakerphp/faker": "^1.23",
+        "composer/installers": "^1.0 || ^2.0"
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^3.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
     },
     "config": {
         "optimize-autoloader": true,
         "sort-packages": true,
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "composer/installers": true
+        },
+        "preferred-install": "dist",
+        "platform": {
+            "php": "7.2"
         }
     },
     "scripts": {
-        "phpcs": "phpcs --standard=WordPress",
-        "phpcbf": "phpcbf --standard=WordPress",
+        "phpcs": "phpcs --standard=WordPress --extensions=php --ignore=vendor/,node_modules/,assets/",
+        "phpcbf": "phpcbf --standard=WordPress --extensions=php --ignore=vendor/,node_modules/,assets/",
+        "phpunit": "phpunit --configuration phpunit.xml.dist",
+        "test": [
+            "@phpcs",
+            "@phpunit"
+        ],
         "post-autoload-dump": [
             "@php -r \"if (PHP_OS_FAMILY === 'Windows') { system('rd /s /q vendor\\fakerphp\\faker\\test 2>nul'); } else { system('rm -rf vendor/fakerphp/faker/test'); }\"",
             "@php -r \"if (PHP_OS_FAMILY === 'Windows') { system('rd /s /q vendor\\fakerphp\\faker\\tests 2>nul'); } else { system('rm -rf vendor/fakerphp/faker/tests'); }\"",
             "@php -r \"if (PHP_OS_FAMILY === 'Windows') { system('rd /s /q vendor\\fakerphp\\faker\\docs 2>nul'); } else { system('rm -rf vendor/fakerphp/faker/docs'); }\"",
-            "@php -r \"foreach(['md', 'txt', 'yml', 'yaml', 'xml', 'dist'] as $ext) { system('del /s /q vendor\\\\*.'.$ext.' 2>nul'); }\""
+            "@php -r \"foreach(['md', 'txt', 'yml', 'yaml', 'xml', 'dist'] as $ext) { system('find vendor -type f -name \\\"*.$ext\\\" -delete 2>/dev/null'); }\""
+        ],
+        "post-install-cmd": [
+            "@post-autoload-dump"
+        ],
+        "post-update-cmd": [
+            "@post-autoload-dump"
+        ],
+        "pre-package": [
+            "composer install --no-dev --optimize-autoloader",
+            "@php -r \"copy('vendor/autoload.php', 'autoload.php');\""
         ]
     },
     "support": {
-        "issues": "https://github.com/microcodes/dummy-content-filler-pro/issues",
-        "source": "https://github.com/microcodes/dummy-content-filler-pro"
+        "issues": "https://github.com/iamshimantadas/draxira/issues",
+        "source": "https://github.com/iamshimantadas/draxira"
+    },
+    "homepage": "https://microcodes.in/draxira/",
+    "keywords": [
+        "wordpress",
+        "plugin",
+        "dummy content",
+        "test data",
+        "woocommerce",
+        "acf",
+        "cmb2",
+        "content generator",
+        "development",
+        "testing"
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "archive": {
+        "exclude": [
+            "/.git",
+            "/.github",
+            "/.gitignore",
+            "/.editorconfig",
+            "/.phpcs.xml.dist",
+            "/phpunit.xml.dist",
+            "/phpcs.xml",
+            "/tests",
+            "/.vscode",
+            "/node_modules",
+            "/.DS_Store",
+            "/Thumbs.db"
+        ]
+    },
+    "extra": {
+        "installer-name": "draxira",
+        "wordpress-install-dir": {
+            "composer/installers": "wp-content/plugins/{$name}/"
+        },
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
 }
